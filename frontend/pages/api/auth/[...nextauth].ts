@@ -24,8 +24,13 @@ export default NextAuth({
           );
 
           const user = res.data;
-          if (user) {
-            return user;
+          if (user && user.token) {
+            return {
+              email: user.email,
+              token: user.token,
+              idToken: user.idToken,
+              refreshToken: user.refreshToken,
+            } as any;
           }
           return null;
         } catch (e) {
@@ -38,11 +43,15 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
+        token.idToken = (user as any).idToken;
+        token.refreshToken = (user as any).refreshToken;
       }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
+      (session as any).idToken = token.idToken;
+      (session as any).refreshToken = token.refreshToken;
       return session;
     },
   },
