@@ -45,6 +45,22 @@ The services rely on several variables. Default fallbacks are used when these ar
 
 Dockerfiles are available (`Dockerfile.frontend`, `Dockerfile.graphql`, `Dockerfile.rest`) if you prefer to run each service in a container.
 
+## Smithy TypeScript client
+
+The `smithy` directory contains a [Smithy](https://smithy.io/) model describing
+the REST API. Running a Smithy build generates a TypeScript client under
+`smithy/typescript-client`. The GraphQL server imports the generated `Company`
+type from this client to ensure the REST and GraphQL layers stay in sync.
+
+To generate the client run:
+
+```bash
+cd smithy
+gradle build
+```
+
+The generated sources can then be consumed by the GraphQL server.
+
 ## CDK deployment
 
 If an AWS CDK stack is provided (not included in this repository) the general workflow is:
