@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "projections": {
+    "typescript-client": {
+      "plugins": {
+        "typescript-codegen": {
+          "package": "jobtracker-client",
+          "packageVersion": "1.0.0",
+          "service": "com.jobtracker#JobTrackerService"
+        }
+      }
+    }
+  }
+}

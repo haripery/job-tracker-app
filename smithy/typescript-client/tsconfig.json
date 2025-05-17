@@ -2,10 +2,12 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
+    "declaration": true,
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "../smithy/typescript-client/src/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }
