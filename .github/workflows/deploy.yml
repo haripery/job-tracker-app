@@ -1,0 +1,31 @@
+name: CI/CD
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Build and push Docker images
+        run: |
+          docker build -f Dockerfile.frontend -t $ECR_REGISTRY/frontend:$GITHUB_SHA .
+          docker build -f Dockerfile.graphql -t $ECR_REGISTRY/graphql:$GITHUB_SHA .
+          docker build -f Dockerfile.rest -t $ECR_REGISTRY/rest:$GITHUB_SHA .
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+          docker push $ECR_REGISTRY/frontend:$GITHUB_SHA
+          docker push $ECR_REGISTRY/graphql:$GITHUB_SHA
+          docker push $ECR_REGISTRY/rest:$GITHUB_SHA
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ecs-task-def.json
+          service: job-tracker
+          cluster: job-tracker-cluster
+          wait-for-service-stability: true
