@@ -1,0 +1,8 @@
+FROM node:18-alpine
+WORKDIR /app
+COPY rest-api/package.json rest-api/package-lock.json ./
+RUN npm ci
+COPY rest-api ./
+RUN npm run build || true
+EXPOSE 3001
+CMD ["node", "src/server.js"]
